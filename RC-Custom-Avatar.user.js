@@ -72,6 +72,136 @@
             specialSend(special);
 
         };
+        fileUpload = uploadFile;
     }
     setUp();
+     function readAsDataURL(file, callback){
+        const reader = new FileReader();
+        reader.onload = (e) => callback(e.target.result, file);
+
+        return reader.readAsDataURL(file);
+    };
+
+    function showUploadPreview (file, callback) {
+        // If greater then 10MB don't try and show a preview
+        if (file.file.size > (10 * 1000000)) {
+            return callback(file, null);
+        }
+
+        if (file.file.type == null) {
+            return callback(file, null);
+        }
+
+        if ((file.file.type.indexOf('audio') > -1) || (file.file.type.indexOf('video') > -1) || (file.file.type.indexOf('image') > -1)) {
+            file.type = file.file.type.split('/')[0];
+
+            return readAsDataURL(file.file, (content) => callback(file, content));
+        }
+
+        return callback(file, null);
+    };
+
+    function getAudioUploadPreview(file, preview) { return `\
+<div class='upload-preview'>
+<audio style="width: 100%;" controls="controls">
+<source src="${ preview }" type="audio/wav">
+Your browser does not support the audio element.
+</audio>
+</div>
+<div class='upload-preview-title'>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-name' style='display: inherit;' value='${ Handlebars._escape(file.name) }' placeholder='${ t('Upload_file_name') }'>
+</div>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-description' style='display: inherit;' value='' placeholder='${ t('Upload_file_description') }'>
+</div>
+</div>`;
+                                                  }
+
+    function getVideoUploadPreview (file, preview) { return `\
+<div class='upload-preview'>
+<video style="width: 100%;" controls="controls">
+<source src="${ preview }" type="video/webm">
+Your browser does not support the video element.
+</video>
+</div>
+<div class='upload-preview-title'>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-name' style='display: inherit;' value='${ Handlebars._escape(file.name) }' placeholder='${ t('Upload_file_name') }'>
+</div>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-description' style='display: inherit;' value='' placeholder='${ t('Upload_file_description') }'>
+</div>
+</div>`; }
+
+    function getImageUploadPreview (file, preview){ return `\
+<div class='upload-preview'>
+<div class='upload-preview-file' style='background-image: url(${ preview })'></div>
+</div>
+<div class='upload-preview-title'>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-name' style='display: inherit;' value='${ Handlebars._escape(file.name) }' placeholder='${ t('Upload_file_name') }'>
+</div>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-description' style='display: inherit;' value='' placeholder='${ t('Upload_file_description') }'>
+</div>
+</div>`; }
+
+    function formatBytes(bytes, decimals) {
+        if (bytes === 0) {
+            return '0 Bytes';
+        }
+
+        const k = 1000;
+        const dm = (decimals + 1) || 3;
+
+        const sizes = [
+            'Bytes',
+            'KB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+        ];
+
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return `${ parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) } ${ sizes[i] }`;
+    };
+
+    function getGenericUploadPreview(file) { return `\
+<div class='upload-preview'>
+<div>${ Handlebars._escape(file.name) } - ${ formatBytes(file.file.size) }</div>
+</div>
+<div class='upload-preview-title'>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-name' style='display: inherit;' value='${ Handlebars._escape(file.name) }' placeholder='${ t('Upload_file_name') }'>
+</div>
+<div class="rc-input__wrapper">
+<input class="rc-input__element" id='file-description' style='display: inherit;' value='' placeholder='${ t('Upload_file_description') }'>
+</div>
+</div>` };
+
+    async function getUploadPreview (file, preview){
+        if (file.type === 'audio') {
+            return getAudioUploadPreview(file, preview);
+        }
+
+        if (file.type === 'video') {
+            return getVideoUploadPreview(file, preview);
+        }
+
+        const isImageFormatSupported = () => new Promise((resolve) => {
+            const element = document.createElement('img');
+            element.onload = () => resolve(true);
+            element.onerror = () => resolve(false);
+            element.src = preview;
+        });
+
+        if (file.type === 'image' && await isImageFormatSupported()) {
+            return getImageUploadPreview(file, preview);
+        }
+
+        return getGenericUploadPreview(file, preview);
+    };
 })();
