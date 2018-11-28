@@ -23,6 +23,7 @@ These are the scripts currently available in the Repository
 This script adds a checkbox to the bottom left corner that defaults to checked.
 When checked, regular messages sent in Rocket Chat will use the Avatar and username Alias specified in the script
 _Note: This does not currently work for attachments and uploads created via drag and drop, as those use a separate method for posting_
+
 To change the Avatar and Alias, edit the two constants at the top of the script:
 ```
 const AVATAR = ""; // Replace with custom avatar url (can be a gif)
