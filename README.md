@@ -7,7 +7,7 @@ To install user scripts (user.js files) in your browser:
 1. Install a free user script extension such as [Tampermonkey](https://tampermonkey.net/) or [Greasemonkey](https://www.greasespot.net/) 
 1. Install the script via the extensions user interface
 1. Customize the @match comment in the metadata section to match the domain of the RC instance (e.g. `http://rc.example.com/*`)
-    1. Or use the extensions UI to customize which sites/domains the script should be active for
+    1. Or use the extension's UI to customize which sites/domains the script should be active for
     
 ### User Styles
 To install user styles (user.css files) in your browser:
