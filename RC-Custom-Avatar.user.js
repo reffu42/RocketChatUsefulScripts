@@ -1,17 +1,16 @@
 // ==UserScript==
 // @name         Rocket Chat Custom Send
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
-// @match        https://rc.clarkinc.biz/*
+// @version      1.0
+// @description  Script to replace default avatar and username with a custom one for Hosted RC instances where users lack that permission
+// @author       reffu42
+// @match        
 // @grant        GM_addStyle
 // ==/UserScript==
 
 
 (function() {
-    'use strict';
-    //GM_addStyle('#rocket-chat.special .rc-message-box__container { background-color:red !important}');
+    'use strict';    
     const AVATAR = ""; // Replace with custom avatar url (can be a gif)
     const ALIAS = "";
 
