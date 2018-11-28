@@ -28,6 +28,7 @@ To change the Avatar and Alias, edit the two constants at the top of the script:
 const AVATAR = ""; // Replace with custom avatar url (can be a gif)
 const ALIAS = ""; // Replace with custom username
 ```
+![example of custom avatar checkbox](https://github.com/reffu42/RocketChatUsefulScripts/blob/master/readme-pics/custom-avatar-shot.PNG)
 
 ## Styles
 These are the styles currently available in the Repository
@@ -35,3 +36,4 @@ These are the styles currently available in the Repository
 ### RC-Dark-Theme.user.css
 This styles changes RC to use a Dark theme with Black/Dark blue as the primary background colors and with White or Light Gray text
 It also includes some small tweaks I found personally useful, such as moving the emoji/message options to the left and shrinking the left sidebar
+![dark style screenshot](https://github.com/reffu42/RocketChatUsefulScripts/blob/master/readme-pics/Screenshot_2018-11-28%20(%E2%80%A2)%20Rocket%20Chat.png)
