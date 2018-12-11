@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat Custom Send
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Script to replace default avatar and username with a custom one for Hosted RC instances where users lack that permission
 // @author       reffu42
 // @match        
@@ -302,8 +302,8 @@ Your browser does not support the video element.
                         var avatar = $('#special-url').val();
                         var alias = $('#special-name').val();
                         var username = Meteor.user().username;
-                        avatar = getAvatar();//avatar.trim().length > 0? avatar : "/avatar/" + username + "?_dc=undefined";
-                        alias = alias.trim().length > 0? alias : username;
+                        avatar = AVATAR;//avatar.trim().length > 0? avatar : "/avatar/" + username + "?_dc=undefined";
+                        alias = ALIAS? alias : username;
                         msgData = {alias: alias, avatar: avatar};
                     }
                     Meteor.call('sendFileMessage', roomId, storage, file, msgData, () => {
