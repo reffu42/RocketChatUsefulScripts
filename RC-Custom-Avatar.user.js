@@ -72,7 +72,11 @@
             specialSend(special);
 
         };
-        fileUpload = uploadFile;
+       fileUpload = function(files) {
+            Meteor.call('getUsersOfRoom', RocketChat.openedRoom, true, (error, result) => {
+                var special = $('#send-special').prop('checked');
+                uploadFile(files, special && !isBlackList);
+            })};
     }
     setUp();
      function readAsDataURL(file, callback){
@@ -204,4 +208,130 @@ Your browser does not support the video element.
 
         return getGenericUploadPreview(file, preview);
     };
-})();
+}
+ async function uploadFile(files, custom) {
+        files = [].concat(files);
+
+        const roomId = Session.get('openedRoom');
+
+        const uploadNextFile = () => {
+            const file = files.pop();
+            if (!file) {
+                modal.close();
+                return;
+            }
+
+            if (!RocketChat.fileUploadIsValidContentType(file.file.type)) {
+                modal.open({
+                    title: t('FileUpload_MediaType_NotAccepted'),
+                    text: file.file.type || `*.${ strRightBack(file.file.name, '.') }`,
+                    type: 'error',
+                    timer: 3000,
+                });
+                return;
+            }
+
+            if (file.file.size === 0) {
+                modal.open({
+                    title: t('FileUpload_File_Empty'),
+                    type: 'error',
+                    timer: 1000,
+                });
+                return;
+            }
+
+            showUploadPreview(file, async(file, preview) => modal.open({
+                title: t('Upload_file_question'),
+                text: await getUploadPreview(file, preview),
+                showCancelButton: true,
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                confirmButtonText: t('Send'),
+                cancelButtonText: t('Cancel'),
+                html: true,
+                onRendered: () => $('#file-name').focus(),
+            }, (isConfirm) => {
+                if (!isConfirm) {
+                    return;
+                }
+
+                const record = {
+                    name: document.getElementById('file-name').value || file.name || file.file.name,
+                    size: file.file.size,
+                    type: file.file.type,
+                    rid: roomId,
+                    description: document.getElementById('file-description').value,
+                };
+
+                const upload = fileUploadHandler('Uploads', record, file.file);
+
+                uploadNextFile();
+
+                const uploads = Session.get('uploading') || [];
+                uploads.push({
+                    id: upload.id,
+                    name: upload.getFileName(),
+                    percentage: 0,
+                });
+                Session.set('uploading', uploads);
+
+                upload.onProgress = (progress) => {
+                    const uploads = Session.get('uploading') || [];
+                    uploads.filter((u) => u.id === upload.id).forEach((u) => {
+                        u.percentage = Math.round(progress * 100) || 0;
+                    });
+                    Session.set('uploading', uploads);
+                };
+
+                upload.start((error, file, storage) => {
+                    if (error) {
+                        const uploads = Session.get('uploading') || [];
+                        uploads.filter((u) => u.id === upload.id).forEach((u) => {
+                            u.error = error.message;
+                            u.percentage = 0;
+                        });
+                        Session.set('uploading', uploads);
+
+                        return;
+                    }
+
+                    if (!file) {
+                        return;
+                    }
+                    var msgData = {};
+                    if(custom) {
+                        var avatar = $('#special-url').val();
+                        var alias = $('#special-name').val();
+                        var username = Meteor.user().username;
+                        avatar = getAvatar();//avatar.trim().length > 0? avatar : "/avatar/" + username + "?_dc=undefined";
+                        alias = alias.trim().length > 0? alias : username;
+                        msgData = {alias: alias, avatar: avatar};
+                    }
+                    Meteor.call('sendFileMessage', roomId, storage, file, msgData, () => {
+                        Meteor.setTimeout(() => {
+                            const uploads = Session.get('uploading') || [];
+                            Session.set('uploading', uploads.filter((u) => u.id !== upload.id));
+                        }, 2000);
+                    });
+                });
+
+                Tracker.autorun((computation) => {
+                    const isCanceling = Session.get(`uploading-cancel-${ upload.id }`);
+                    if (!isCanceling) {
+                        return;
+                    }
+
+                    computation.stop();
+                    upload.stop();
+
+                    const uploads = Session.get('uploading') || {};
+                    Session.set('uploading', uploads.filter((u) => u.id !== upload.id));
+                });
+            }));
+        };
+
+        uploadNextFile();
+    };
+
+
+)();
