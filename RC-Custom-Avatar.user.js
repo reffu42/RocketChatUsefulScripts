@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat Custom Send
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Script to replace default avatar and username with a custom one for Hosted RC instances where users lack that permission
 // @author       reffu42
 // @match        
@@ -75,7 +75,7 @@
        fileUpload = function(files) {
             Meteor.call('getUsersOfRoom', RocketChat.openedRoom, true, (error, result) => {
                 var special = $('#send-special').prop('checked');
-                uploadFile(files, special && !isBlackList);
+                uploadFile(files, special);
             })};
     }
     setUp();
