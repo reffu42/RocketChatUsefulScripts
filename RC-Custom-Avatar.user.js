@@ -39,7 +39,7 @@
                             Meteor.call('slashCommand', { cmd: command, params: param, msg: msgObject },
                                         (err, result) => typeof commandOptions.result === 'function' && commandOptions.result(err, result, { cmd: command, params: param, msg: msgObject }));
                         }
-                        textArea.val('');
+                        roomObj.clearCurrentDraft();
                         return;
                     }
                 }
