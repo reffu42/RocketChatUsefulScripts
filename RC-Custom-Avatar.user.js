@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat Custom Send
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Script to replace default avatar and username with a custom one for Hosted RC instances where users lack that permission
 // @author       reffu42
 // @match        
