@@ -13,17 +13,55 @@
     'use strict';    
     const AVATAR = ""; // Replace with custom avatar url (can be a gif)
     const ALIAS = "";
-
-    function sendSpecial(custom) {
+      
+     async function sendSpecial(custom) {
         var roomId = RocketChat.openedRoom;
         var textArea = $('.rc-message-box__textarea');
-        var text = textArea.val();
+        var text = "";
         var roomObj = chatMessages[RocketChat.openedRoom];
-        var username = Meteor.user().username;
-        var avatar = AVATAR.trim().length > 0? AVATAR : "/avatar/" + username + "?_dc=undefined";
-        var alias = ALIAS.trim().length > 0? ALIAS : username;
+        var avatar = AVATAR.trim().length > 0? AVATAR : null;
+        var alias = ALIAS.trim().length > 0? ALIAS : null;
         var msgObject = {"rid": roomId, "msg":text, "alias":alias, "avatar": avatar, "_id": Random.id()};
+        const reply = textArea.data('reply');
+        const mentionUser = textArea.data('mention-user') || false;
+
         if(custom && !roomObj.editing.id) {
+            if (reply !== undefined) {
+                text = `[ ](${ await RocketChat.MessageAction.getPermaLink(reply._id) }) `;
+                const roomInfo = RocketChat.models.Rooms.findOne(reply.rid, { fields: { t: 1 } });
+                if (roomInfo.t !== 'd' && reply.u.username !== Meteor.user().username && mentionUser) {
+                    text += `@${ reply.u.username } `;
+                }
+            }
+            text += textArea.val();
+            if(text == "") {
+                return;
+            }
+
+            roomObj.clearCurrentDraft();
+            textArea
+                .removeData('reply')
+                .trigger('dataChange');
+            textArea.val('');
+            textArea.trigger('change').trigger('input');
+            if (typeof textArea.updateAutogrow === 'function') {
+                textArea.updateAutogrow();
+            }
+            roomObj.hasValue.set(false);
+            roomObj.stopTyping(roomId);
+
+            msgObject.msg = text;
+            if (text.slice(0, 2) === '+:') {
+                const reaction = text.slice(1).trim();
+                if (RocketChat.emoji.list[reaction]) {
+                    const lastMessage = ChatMessage.findOne({ rid:roomId }, { fields: { ts: 1 }, sort: { ts: -1 } });
+                    Meteor.call('setReaction', reaction, lastMessage._id);
+                    textArea.val('');
+                    textArea.trigger('change').trigger('input');
+                    return;
+                }
+            }
+
             const match = text.match(/^\/([^\s]+)(?:\s+(.*))?$/m);
             if(text[0] === '/' && match) {
                 let command;
@@ -39,7 +77,6 @@
                             Meteor.call('slashCommand', { cmd: command, params: param, msg: msgObject },
                                         (err, result) => typeof commandOptions.result === 'function' && commandOptions.result(err, result, { cmd: command, params: param, msg: msgObject }));
                         }
-                        roomObj.clearCurrentDraft();
                         return;
                     }
                 }
@@ -49,7 +86,6 @@
         else {
             roomObj.oldSend(roomId, textArea[0]);
         }
-        textArea.val('');
     }
 
     function setUp() {
