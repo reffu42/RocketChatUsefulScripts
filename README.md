@@ -31,6 +31,10 @@ const ALIAS = ""; // Replace with custom username
 ```
 ![example of custom avatar checkbox](https://github.com/reffu42/RocketChatUsefulScripts/blob/master/readme-pics/custom-avatar-shot.PNG)
 
+### RC-Remove-Edit-Restriction.user.js
+
+This script removes the `BlockEditInMinutes` check from the UI. You won't be able to edit in channels where editing is blocked completely, but it will unlock the ability to edit (via the up-arrow) in channels where there is a timeout on edit.
+
 ## Styles
 These are the styles currently available in the Repository
 
