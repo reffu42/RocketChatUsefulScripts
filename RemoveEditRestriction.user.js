@@ -12,7 +12,7 @@
 (function() {
 'use strict'; 
    function setUp() {
-        if(typeOf ChatMessages == 'undefined) {        
+        if(typeOf ChatMessages == 'undefined') {        
             setTimeout(setUp, 1000);
             return;
         }
@@ -20,8 +20,8 @@
             var roomObj = chatMessages[RocketChat.openedRoom];
             specialEdit(element, index, roomObj);
         };
-  }
-  setUp();
+   }
+   setUp();
   
    function specialEdit(element, index, roomObj)
     {
