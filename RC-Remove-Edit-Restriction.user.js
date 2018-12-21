@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat Remove Edit Restriction
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Script to remove edit timeout in RC installations
 // @author       reffu42
 // @match        
@@ -11,7 +11,7 @@
 (function() {
 'use strict'; 
    function setUp() {
-        if(typeOf ChatMessages == 'undefined') {        
+        if(typeof ChatMessages == 'undefined') {        
             setTimeout(setUp, 1000);
             return;
         }
