@@ -1,4 +1,3 @@
- executable file 374 lines (324 sloc) 14 KB
 // ==UserScript==
 // @name         Rocket Chat Remove Edit Restriction
 // @namespace    http://tampermonkey.net/
