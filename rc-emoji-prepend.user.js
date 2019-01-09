@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat emoji prepend
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Script to prepend text to the beginning of every message (most likely an emoji)
 // @author       reffu42
 // @match        
