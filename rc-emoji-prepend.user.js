@@ -11,7 +11,7 @@
 
 (function() {
     'use strict';    
-    const EMOII = '';
+    var EMOJI = '';
       
     
     function setUp() {
