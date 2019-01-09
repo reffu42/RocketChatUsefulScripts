@@ -11,7 +11,7 @@
 
 (function() {
     'use strict';
-    const EMOJI = ':beret:';
+    const EMOJI = '';
 
     function setUp() {
         var footers = $('aside footer');
