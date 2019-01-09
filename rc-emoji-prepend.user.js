@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Rocket Chat Custom Send
+// @name         Rocket Chat emoji prepend
 // @namespace    http://tampermonkey.net/
-// @version      1.7
-// @description  Script to replace default avatar and username with a custom one for Hosted RC instances where users lack that permission
+// @version      1.0
+// @description  Script to prepend text to the beginning of every message (most likely an emoji)
 // @author       reffu42
 // @match        
 // @grant        GM_addStyle
