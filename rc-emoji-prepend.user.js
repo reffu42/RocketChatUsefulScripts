@@ -23,10 +23,11 @@
         ChatMessages.prototype.oldSend = ChatMessages.prototype.send;
         ChatMessages.prototype.send = function(roomId, textArea) {
             var special = $('#prepend-emoji').prop('checked');
+            var roomObj = chatMessages[roomId];
+
             if(special && !roomObj.editing.id) {
               textArea.value = EMOJI + " " + textArea.value;
             }
-            var roomObj = chatMessages[roomId];
             roomObj.oldSend(roomId, textArea);
         };
     }
