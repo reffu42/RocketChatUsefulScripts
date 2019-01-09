@@ -20,12 +20,11 @@
             setTimeout(setUp, 1000);
             return;
         }
-        footers.append('<label style="color:lightgray !important;">Emoji Prepend <input type="checkbox" style="vertical-align:middle;" id="send-special" checked/></label>');     
+        footers.append('<label style="color:lightgray !important;">Emoji Prepend <input type="checkbox" style="vertical-align:middle;" id="prepend-emoji" checked/></label>');     
         var oldSend = ChatMessages.prototype.send;
-        ChatMessages.prototype.oldSend = ChatMessages.prototype.send;
-        var specialSend = sendSpecial;
+        ChatMessages.prototype.oldSend = ChatMessages.prototype.send;        
         ChatMessages.prototype.send = function(roomId, textArea) {
-            var special = $('#send-special').prop('checked');
+            var special = $('#prepend-emoji').prop('checked');
             if(special) {
               textArea.val = EMOJI + textArea.val;
             }
