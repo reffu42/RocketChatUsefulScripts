@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rocket Chat emoji prepend
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Script to prepend text to the beginning of every message (most likely an emoji)
 // @author       reffu42
 // @match        
@@ -25,7 +25,7 @@
         ChatMessages.prototype.send = function(roomId, textArea) {
             var special = $('#prepend-emoji').prop('checked');
             if(special) {
-              textArea.val = EMOJI + textArea.val;
+              textArea.value = EMOJI + " " + textArea.value;
             }
             var roomObj = chatMessages[roomId];
             roomObj.oldSend(roomId, textArea);
